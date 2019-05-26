@@ -304,7 +304,7 @@ CImg<float> globalSaturation(StokesImage vs, bool maximize){
 	
 	if(alphas.size()<=2){
 		cout << "NO REAL ROOTS" << endl;
-		int number=15;
+		int number=9;
 		for(int k=0;k<number;k++){
 			alphas.push_back(k*180.f/number*cimg::PI/180.0f);
 		}
