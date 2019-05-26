@@ -1,11 +1,11 @@
 #include <iostream>
 
-#include "Stokes.h"
-#include "LuminanceFilters.h"
-#include "ContrastFilters.h"
-#include "SaturationFilters.h"
-#include "Polarizers.h"
-#include "Window.h"
+#include "Stokes/Stokes.h"
+#include "Stokes/LuminanceFilters.h"
+#include "Stokes/ContrastFilters.h"
+#include "Stokes/SaturationFilters.h"
+#include "Stokes/Polarizers.h"
+#include "Stokes/Window.h"
 
 
 #include <ctime>
@@ -33,60 +33,6 @@ void color(int x, int y, int R, int G, int B, CImg<float> & img){
 		}
 	}
 }
-
-class Rectangulo{
-	private:
-		int R=255,G=255,B=255;
-	public:
-		Pixel i,p;
-		bool actu=false;
-		Rectangulo(){}
-		void dibujar(CImg<float> & img){
-			int izq = i.c, der = p.c;
-			if(izq>der){
-				izq = p.c;
-				der = i.c;
-			}
-
-			int top = i.f, bot = p.f;
-			if(bot>top){
-				top = p.f;
-				bot = i.f;
-			}
-
-			//HORIZONTALES
-			for(int aux=izq;aux<der;aux++){
-				color(aux,bot,R,G,B,img);
-				color(aux,top,R,G,B,img);
-			}
-
-			//VERTICALES
-			for(int aux=bot;aux<top;aux++){
-				color(izq,aux,R,G,B,img);
-				color(der,aux,R,G,B,img);
-			}
-		}
-
-		vector<Pixel> getPixeles(){
-			vector<Pixel> resul = {};
-			int izq = i.c, der = p.c;
-			if(izq>der){
-				izq = p.c;
-				der = i.c;
-			}
-			int top = i.f, bot = p.f;
-			if(bot>top){
-				top = p.f;
-				bot = i.f;
-			}
-			for(int i=izq;i<der;i++){
-				for(int j=bot;j<top;j++){
-					resul.push_back(Pixel(i,j));
-				}
-			}
-			return resul;
-		}
-};
 
 /*
 	Clase para contar los FPS
@@ -150,24 +96,32 @@ public:
 	}
 };
 
-void drawcircle(int x0, int y0, int radius, CImg<float> & img)
+void drawcircle(int x0, int y0, int radius, CImg<float> & img, bool maximize, int mode)
 {
     int x = radius-1;
     int y = 0;
     int dx = 1;
     int dy = 1;
     int err = dx - (radius << 1);
-
+    int R=255,G=255,B=255;
+    if(mode >=0 && mode<=2){
+    	if(maximize){
+    		G=0;B=0;
+    	}
+    	else{
+    		R=0;G=0;
+    	}
+    }
     while (x >= y)
     {
-        color(x0 + x, y0 + y,255,255,255,img);
-        color(x0 + y, y0 + x,255,255,255,img);
-        color(x0 - y, y0 + x,255,255,255,img);
-        color(x0 - x, y0 + y,255,255,255,img);
-        color(x0 - x, y0 - y,255,255,255,img);
-        color(x0 - y, y0 - x,255,255,255,img);
-        color(x0 + y, y0 - x,255,255,255,img);
-        color(x0 + x, y0 - y,255,255,255,img);
+        color(x0 + x, y0 + y,R,G,B,img);
+        color(x0 + y, y0 + x,R,G,B,img);
+        color(x0 - y, y0 + x,R,G,B,img);
+        color(x0 - x, y0 + y,R,G,B,img);
+        color(x0 - x, y0 - y,R,G,B,img);
+        color(x0 - y, y0 - x,R,G,B,img);
+        color(x0 + y, y0 - x,R,G,B,img);
+        color(x0 + x, y0 - y,R,G,B,img);
 
         if (err <= 0)
         {
@@ -186,9 +140,9 @@ void drawcircle(int x0, int y0, int radius, CImg<float> & img)
 }
 /*
 void linealAngulos(StokesImage vs, int x, int y, WindowAbs * ven, CImg<float> & anterior, CImg<float> & angles){
-	vector<Peso> winWeights = ven->getWeights(x,y);
+	vector<Weight> winWeights = ven->getWeights(x,y);
 	for(int auxV=0;auxV<winWeights.size();auxV++){
-		Peso p=winWeights[auxV];
+		Weight p=winWeights[auxV];
 		float final = angles(p.f,p.c,0,0)/2*cimg::PI/180.0f;
 		for(int k=0;k<3;k++){
 			if(p.p>=0.05f){
@@ -205,26 +159,28 @@ class linealAngulosPara{
 		bool maximizar;
 		thread * vt[MAX_THREADS];
 		int radio;
-		vector<Peso> venPesos;
+		vector<Weight> winWeights;
 		CImg<float> angulos;
 	public:
 		void operator()();
-		linealAngulosPara(StokesImage * vs, vector<Peso> venPesos, CImg<float> angulos){
+		linealAngulosPara(StokesImage * vs, vector<Weight> winWeights, CImg<float> angulos){
 			this->vs = vs;
-			this->venPesos = venPesos;
+			this->winWeights = winWeights;
 			this->angulos=angulos;
 		}
 
 		void filtrarLineaN(int i,int n,CImg<float> & anterior){
 			//cout << "PROCESO DE " << i << " A " << n << endl;
 			for(int auxV=i;auxV<n;auxV++){
-				if(auxV < venPesos.size()){
-					Peso p=venPesos[auxV];
+				if(auxV < winWeights.size()){
+					Weight w=winWeights[auxV];
 
-					if(p.p>=0.05f){
-						float final = angulos(p.f,p.c,0,0)/2*cimg::PI/180.0f;
+					if(w.getWeight()>=0.05f){
+						int r=w.getRow();
+						int c=w.getColumn();
+						float final = angulos(r,c,0,0)/2*cimg::PI/180.0f;
 						for(int k=0;k<3;k++){
-							anterior(p.f,p.c,k)=p.p*(fmin(1,fmax(0,(vs->atI(p.f,p.c,k)+vs->atQ(p.f,p.c,k)*cos(2*final)+vs->atU(p.f,p.c,k)*sin(2*final))/2))*255)+(1-p.p)*anterior(p.f,p.c,k);
+							anterior(r,c,k)=w.getWeight()*(fmin(1,fmax(0,(vs->atI(r,c,k)+vs->atQ(r,c,k)*cos(2*final)+vs->atU(r,c,k)*sin(2*final))/2))*255)+(1-w.getWeight())*anterior(r,c,k);
 						}
 					}
 				}
@@ -237,13 +193,13 @@ class linealAngulosPara{
 };
 
 void linealAngulos(StokesImage * vs, int x, int y, WindowAbs * ven, CImg<float> & anterior, CImg<float> & angulos){
-	vector<Peso> venPesos = ven->getWeights(x, y);
-	linealAngulosPara fp (vs, venPesos,angulos);
+	vector<Weight> winWeights = ven->getWeights(x, y);
+	linealAngulosPara fp (vs, winWeights,angulos);
 	int total = 4;
 	thread vt[total];
 	//cout << "THREADS: " << total << " - PIXELES: " << winWeights.size()/total << endl;
 	for(int i=0;i<total;i++){
-		vt[i]= fp.tothread(i*venPesos.size()/total, (i+1)*venPesos.size()/total, anterior);
+		vt[i]= fp.tothread(i*winWeights.size()/total, (i+1)*winWeights.size()/total, anterior);
 	}
 	for(int i=0;i<total;i++){
 		vt[i].join();
@@ -268,6 +224,7 @@ int main(int argc, char* argv[]) {
 
 	CImg<float> angBmax, angBmin, angCmax, angCmin, angSmax, angSmin;
 	//ANGULOS BRILLO
+	cout << "CALCULATING LUMINANCE ANGLES" << endl;
 	luminanceLocalThreads fpbmax (vs,10,true);
     fpbmax.apply();
 	angBmax = fpbmax.angles;
@@ -275,28 +232,26 @@ int main(int argc, char* argv[]) {
 	luminanceLocalThreads fpbmin (vs,10,false);
     fpbmin.apply();
 	angBmin = fpbmin.angles;
-	cout << "CALCULADO ANGULOS BRILLO" << endl;
 	//ANGULOS CONTRASTE
-	/*
+	cout << "CALCULATING CONTRAST ANGLES" << endl;
 	GaussianWindow ac(vs.Stokes.width(),vs.Stokes.height(),10,5);
 	WindowAbs * ptrc = &ac;
-	filtroParaleloC fpcmax (vs,10,true,ptrc);
-	fpcmax.filtrado();
+	contrastLocalThread fpcmax (vs,10,true,ptrc);
+	fpcmax.apply();
 	angCmax = fpcmax.angles;
 
-	filtroParaleloC fpcmin (vs,10,false,ptrc);
+	contrastLocalThread fpcmin (vs,10,false,ptrc);
 	fpcmin.apply();
 	angCmin = fpcmin.angles;
-	cout << "CALCULADO ANGULOS CONTRASTE" << endl;*/
 	//ANGULOS SATURACION
+	cout << "CALCULATING SATURATION ANGLES" << endl;
 	GaussianWindow a2(vs.Stokes.width(),vs.Stokes.height(),15,7.5);
 	WindowAbs * ptr2 = &a2;
-	filtroParaleloSatVen fpsmax (vs,10,true,nullptr,ptr2,false);
-	fpsmax.filtrado();
+	saturationLocalThread fpsmax (vs,10,true,nullptr,ptr2);
+	fpsmax.apply();
 	angSmax = fpsmax.angularMean;
-	cout << "CALCULADO ANGULOS SATURACION" << endl;
-	filtroParaleloSatVen fpsmin (vs,10,false,nullptr,ptr2,false);
-	fpsmin.filtrado();
+	saturationLocalThread fpsmin (vs,10,false,nullptr,ptr2);
+	fpsmin.apply();
 	angSmin = fpsmin.angularMean;
 
 
@@ -307,11 +262,10 @@ int main(int argc, char* argv[]) {
 			}
 		}
 	}
-	CImgDisplay main_disp(nueva,"Imagen",0);
+	CImgDisplay main_disp(nueva,"BRUSH TOOL",0);
 	int tam=20;
 	bool maximizar=false;
-	bool pulsadaM=true, newRect=true;
-	Rectangulo rect;
+	bool pulsadaM=true;
 	int modo=0; //0 brillo, 1 contraste, 2 sat, 3 original, 4 lineal
 	bool cambioCon=false;
 	bool pulsada = true;
@@ -330,28 +284,27 @@ int main(int argc, char* argv[]) {
 		begin = clock();
 		if(main_disp.is_keyPADADD()){
 			tam++;
-			cout << "INCREMENTA VENTANA" << endl;
+			cout << "WINDOW ENLARGED" << endl;
 			cout << tam << endl;
-			a = GaussianWindow(nueva.width(),nueva.height(),tam,tam/3.5f);
+			a = GaussianWindow(nueva.width(),nueva.height(),tam,tam/2.5f);
 		}
 		if(main_disp.is_keyPADSUB()){
 			if(tam>2){
 				tam--;
-				cout << "DECREMENTA VENTANA" << endl;
-				a = GaussianWindow(nueva.width(),nueva.height(),tam,tam/3.5f);
+				cout << "SHRUNKEN WINDOW" << endl;
+				a = GaussianWindow(nueva.width(),nueva.height(),tam,tam/2.5f);
 			}
 		}
 		//MAXIMIZAR O MINIMIZAR
 		if(main_disp.is_keyM()){
 			if(pulsadaM){
-				cambioCon=true;;
-				cout << "CAMBIA MAXIMIZAR" << endl;
+				cambioCon=true;
 				maximizar = !maximizar;
 				if(maximizar){
-					cout << "MAXIMIZANDO" << endl;
+					cout << "MAXIMIZING" << endl;
 				}
 				else{
-					cout << "MINIMIZAR" << endl;
+					cout << "MINIMIZING" << endl;
 				}
 				pulsadaM=false;
 			}
@@ -360,24 +313,23 @@ int main(int argc, char* argv[]) {
 			pulsadaM=true;
 		}
 
-		if(main_disp.is_keyB()){
+		if(main_disp.is_keyL()){
 			if(pulsada){
-				cout << "OPTIMIZANDO EL BRILLO" << endl;
+				cout << "OPTIMIZING LUMINANCE" << endl;
 				modo=0;
 				pulsada = false;
 			}
 		}
 		else if(main_disp.is_keyC()){
 			if(pulsada){
-				cout << "OPTIMIZANDO EL CONTRASTE" << endl;
-				newRect=true;
+				cout << "OPTIMIZING CONTRAST" << endl;
 				modo=1;
 				pulsada = false;
 			}
 		}
 		else if(main_disp.is_keyS()){
 			if(pulsada){
-				cout << "OPTIMIZANDO LA SATURACION" << endl;
+				cout << "OPTIMIZING SATURATION" << endl;
 				modo=2;
 				pulsada = false;
 			}
@@ -389,10 +341,12 @@ int main(int argc, char* argv[]) {
 				pulsada = false;
 			}
 		}
-		else if(main_disp.is_keyF()){
+		else if(main_disp.is_keyP()){
 			if(pulsada){
-				cout << "FILTRO LINEAL" << endl;
-				angulo+=10;
+				cout << "LINEAR POLARIZER. Introduce angle in degrees" << endl;
+				string ang="";
+				cin >> ang;
+				angulo=stof(ang);
 				modo=4;
 				pulsada = false;
 			}
@@ -413,8 +367,8 @@ int main(int argc, char* argv[]) {
 		end = clock();
 		double msb = double(end-begin)/(CLOCKS_PER_SEC/1000);
 		begin = clock();
+		drawcircle(main_disp.mouse_x(),main_disp.mouse_y(),tam,mostrar,maximizar,modo);
 		if(modo==0) {
-			drawcircle(main_disp.mouse_x(),main_disp.mouse_y(),tam,mostrar);
 			if(main_disp.button()&1 && main_disp.mouse_y()>=0 && main_disp.mouse_x()>=0){
 				//cout << "DENTRO: " << (main_disp.button()&1) << endl;
 				int x = main_disp.mouse_x(), y = main_disp.mouse_y();
@@ -429,29 +383,6 @@ int main(int argc, char* argv[]) {
 			}	
 		}
 		else if(modo==1){
-			/*
-			if(main_disp.button()&1 && main_disp.mouse_y()>=0 && main_disp.mouse_x()>=0){
-				int x = main_disp.mouse_x(), y = main_disp.mouse_y();
-				if(newRect){
-					rect.i.c=x;rect.i.f=y;
-					newRect=false;
-				}
-				rect.p.c = x; rect.p.f = y;
-				rect.actu=true;
-				rect.dibujar(mostrar);
-			}
-			if(main_disp.button()&2 && main_disp.mouse_y()>=0 && main_disp.mouse_x()>=0){
-				newRect=true;
-				rect.actu=false;
-			}
-			if(!(main_disp.button()&1) && main_disp.mouse_y()>=0 && main_disp.mouse_x()>=0){
-				if(rect.actu){
-					contrastePixel(vs,maximize, rect.getPixeles(), nueva);
-					rect.actu=false;
-				}
-				newRect=true;
-			}*/
-			drawcircle(main_disp.mouse_x(),main_disp.mouse_y(),tam,mostrar);
 			if(main_disp.button()&1 && main_disp.mouse_y()>=0 && main_disp.mouse_x()>=0){
 				//cout << "DENTRO: " << (main_disp.button()&1) << endl;
 				int x = main_disp.mouse_x(), y = main_disp.mouse_y();
@@ -470,7 +401,6 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		else if(modo==2){
-			drawcircle(main_disp.mouse_x(),main_disp.mouse_y(),tam,mostrar);
 			if(main_disp.button()&1 && main_disp.mouse_y()>=0 && main_disp.mouse_x()>=0){
 				//cout << "DENTRO: " << (main_disp.button()&1) << endl;
 				int x = main_disp.mouse_x(), y = main_disp.mouse_y();
@@ -485,25 +415,23 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		else if(modo==3){
-			drawcircle(main_disp.mouse_x(),main_disp.mouse_y(),tam,mostrar);
 			if(main_disp.button()&1 && main_disp.mouse_y()>=0 && main_disp.mouse_x()>=0){
 				//cout << "DENTRO: " << (main_disp.button()&1) << endl;
 				int x = main_disp.mouse_x(), y = main_disp.mouse_y();
 				///cout << "FILA: " << y << " COL: " << x << endl;
 				//pixeles.push_back(Pixel(y,x));
 				//brilloPixel(vs,maximize,pixeles,nueva);
-				original(vs,maximizar,x,y,&a,nueva);
+				original(vs,x,y,&a,nueva);
 			}
 		}
 		else if(modo==4){
-			drawcircle(main_disp.mouse_x(),main_disp.mouse_y(),tam,mostrar);
 			if(main_disp.button()&1 && main_disp.mouse_y()>=0 && main_disp.mouse_x()>=0){
 				//cout << "DENTRO: " << (main_disp.button()&1) << endl;
 				int x = main_disp.mouse_x(), y = main_disp.mouse_y();
 				///cout << "FILA: " << y << " COL: " << x << endl;
 				//pixeles.push_back(Pixel(y,x));
 				//brilloPixel(vs,maximize,pixeles,nueva);
-                linearWindow(vs, maximizar, x, y, &a, nueva, angulo);
+                linearWindow(vs, x, y, &a, nueva, angulo);
 			}
 		}
 		main_disp.display(mostrar);
