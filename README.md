@@ -17,26 +17,26 @@ We provide a [dataset](http://dx.doi.org/10.17632/s4sc8zt4sx.1) with the 5 image
 - [CImg](https://github.com/dtschump/CImg): A open-source C++ toolkit for image processing
 - [Quartic](https://github.com/sasamil/Quartic): A library to resolve equation of 4th order
 
-'''
+```
 git clone https://github.com/ferdelmo/polarization-mapping.git
 cd polarization-mapping
 git clone https://github.com/dtschump/CImg
 git clone https://github.com/sasamil/Quartic
-'''
+```
 To compile in linux:
-'''
+```
 g++ -std=c++11  -o pm main.cc Quartic/quartic.cpp-O2 -L/usr/X11R6/lib -lm -lpthread -lX11
 g++ -std=c++11  -o BrushTool BrushTool.cc Quartic/quartic.cpp-O2 -L/usr/X11R6/lib -lm -lpthread -lX11
-'''
+```
 Windows(MingW windows version):
-'''
+```
 g++ -std=c++11 -o pm.exe main.cc Quartic/quartic.cpp -O2 -lgdi32
 g++ -std=c++11 -o BrushTool.exe BrushTool.cc Quartic/quartic.cpp -O2 -lgdi32
-'''
+```
 Mac OS X:
-'''
+```
 g++ -o pm.exe main.cpp Quartic/quartic.cpp-O2 -lm -lpthread -I/usr/X11R6/include -L/usr/X11R6/lib -lm -lpthread -lX11
 g++ -o BrushTool.exe BrushTool.cpp Quartic/quartic.cpp-O2 -lm -lpthread -I/usr/X11R6/include -L/usr/X11R6/lib -lm -lpthread -lX11
-'''
+```
 
 Execution instructions can be found in the readme.txt file.
