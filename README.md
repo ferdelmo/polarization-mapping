@@ -9,7 +9,7 @@ Two different tools are provided:
 
 The tool recive as input a directoy with 5 images with different polarizations filters. 4 with a linear polarizer at 0º, 45º, 90º and 135º, and another with a RCP(Right Circular Polarizer). For the optimization filters or the linear filters, the circular polarizer is not needed and the tool can work with only the 4 images with linear polarization.
 
-We provide a [dataset](http://dx.doi.org/10.17632/s4sc8zt4sx.1) with the 5 images needed for different scenes (some scenes do not have the circular image): 
+In our [project page](http://webdiis.unizar.es/~amunoz/projects/CG2019_polarization/) we provide a dataset with the 5 images needed for different scenes (some scenes do not have the circular image). Also, you can check the theory on which this work is based on the project page.
 
 ## Compile
 - git: for downloading the source code
