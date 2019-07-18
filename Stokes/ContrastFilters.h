@@ -335,7 +335,7 @@ CImg<float> globalContrast(StokesImage vs, bool maximizar){
 
 	for(int ind=0;ind<alphas.size();ind++){
 		float val=contrastIndex(linearFilter(vs, alphas[ind] * 180.0f / cimg::PI));
-		cout << alphas[ind]*180/cimg::PI << " -> " << val << endl;
+		//cout << alphas[ind]*180/cimg::PI << " -> " << val << endl;
 		if(val>max){
 			max=val; maxI=ind;
 		}

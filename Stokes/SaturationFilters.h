@@ -492,11 +492,11 @@ class saturationLocalThread{
 			IMGnormalMean.save_jpeg("pruebaNormal.jpg");
 			IMGangularMean.save_jpeg("pruebaAngular.jpg");
 			*/
-			cout << "NO REAL ROOTS: " << numNOSOL2 << "pixels" << endl;
-			cout << "NO REAL ROOTS: " << numNOSOL2*1.0f/(1.0f*angularMean.width()*angularMean.height())*100 << "%" << endl;
-			cout << "SATURATION INDEX: " << saturationIndex(resul) << endl;
+			//cout << "NO REAL ROOTS: " << numNOSOL2 << "pixels" << endl;
+			//cout << "NO REAL ROOTS: " << numNOSOL2*1.0f/(1.0f*angularMean.width()*angularMean.height())*100 << "%" << endl;
+			//cout << "SATURATION INDEX: " << saturationIndex(resul) << endl;
 			//cout << "INDICE SAT normalMean: " << indiceSaturacion(IMGnormalMean) << endl;
-			cout << "SATURATION INDEX angularMean: " << saturationIndex(IMGangularMean) << endl;
+			//cout << "SATURATION INDEX angularMean: " << saturationIndex(IMGangularMean) << endl;
 
 		}
 

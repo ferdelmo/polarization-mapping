@@ -240,7 +240,7 @@ class luminanceFilterWindow{
 			return thread(&luminanceFilterWindow::filterRows,this,i,n,std::ref(anterior));
 		}
 };
-void filtrosBrilloParaleloPincel(StokesImage * vs, bool maximize, int radius, vector<Weight> winWeights, CImg<float> & last){
+void luminanceBrush(StokesImage * vs, bool maximize, int radius, vector<Weight> winWeights, CImg<float> & last){
 	luminanceFilterWindow fp (vs,maximize, winWeights);
 	int total = radius/2;
 	thread vt[total];

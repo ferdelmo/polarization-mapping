@@ -25,8 +25,8 @@ git clone https://github.com/sasamil/Quartic
 ```
 To compile in linux:
 ```
-g++ -std=c++11  -o pm main.cc Quartic/quartic.cpp-O2 -L/usr/X11R6/lib -lm -lpthread -lX11
-g++ -std=c++11  -o BrushTool BrushTool.cc Quartic/quartic.cpp-O2 -L/usr/X11R6/lib -lm -lpthread -lX11
+g++ -std=c++11  -o pm main.cc Quartic/quartic.cpp -O2 -L/usr/X11R6/lib -lm -lpthread -lX11
+g++ -std=c++11  -o BrushTool BrushTool.cc Quartic/quartic.cpp -O2 -L/usr/X11R6/lib -lm -lpthread -lX11
 ```
 Windows(MingW windows version):
 ```
@@ -35,8 +35,8 @@ g++ -std=c++11 -o BrushTool.exe BrushTool.cc Quartic/quartic.cpp -O2 -lgdi32
 ```
 Mac OS X:
 ```
-g++ -o pm.exe main.cpp Quartic/quartic.cpp-O2 -lm -lpthread -I/usr/X11R6/include -L/usr/X11R6/lib -lm -lpthread -lX11
-g++ -o BrushTool.exe BrushTool.cpp Quartic/quartic.cpp-O2 -lm -lpthread -I/usr/X11R6/include -L/usr/X11R6/lib -lm -lpthread -lX11
+g++ -o pm.exe main.cc Quartic/quartic.cpp -O2 -lm -lpthread -I/usr/X11R6/include -L/usr/X11R6/lib -lm -lpthread -lX11
+g++ -o BrushTool.exe BrushTool.cc Quartic/quartic.cpp -O2 -lm -lpthread -I/usr/X11R6/include -L/usr/X11R6/lib -lm -lpthread -lX11
 ```
 
 Execution instructions can be found in the readme.txt file.

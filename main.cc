@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
 			std::cerr << "[-sv (minimize|maximize) 0|1 radius standardDeviation] Local Saturation with window" << endl;
 			std::cerr << "with -s and -sv, [-blur radius standardDeviation]to blur the angle" << endl;
 			std::cerr << "[-sg (minimize|maximize) 0|1] Global Saturation " << endl;
-			std::cerr << "for more info read the README.txt" << endl;
+			std::cerr << "for more info read the readme.txt" << endl;
 		return -1;
 	}
 	for(int i=0;i<argc;i++){
@@ -285,7 +285,7 @@ int main(int argc, char* argv[]) {
 			filtrolineal= customFilter(*vs, c1, c2, c3)*255;
 		}
 		else if(circular){
-			filtrolineal= circularFilter(*vs, deg2rad(grados), deg2rad(delta));
+			filtrolineal= circularFilter(*vs, deg2rad(grados), deg2rad(delta))*255;
 		}
 		else{
 			filtrolineal= linearFilter(*vs, grados)*255;

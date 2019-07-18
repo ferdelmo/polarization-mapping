@@ -2,8 +2,9 @@ POLARIZATION MAPPING
 
 Compile:
 
-g++ -std=c++11  -o pm main.cc Quartic/quartic.cpp-O2 -L/usr/X11R6/lib -lm -lpthread -lX11
-g++ -std=c++11  -o BrushTool BrushTool.cc Quartic/quartic.cpp-O2 -L/usr/X11R6/lib -lm -lpthread 
+g++ -std=c++11  -o pm main.cc Quartic/quartic.cpp -O2 -L/usr/X11R6/lib -lm -lpthread -lX11
+
+g++ -std=c++11  -o BrushTool BrushTool.cc Quartic/quartic.cpp -O2 -L/usr/X11R6/lib -lm -lpthread 
 
 Use:
 
@@ -81,7 +82,7 @@ Brush tool:
 ./BrushTool -i pt 
 This command will open a window that will show the image without any polarizer and a brush.
 This tool is still a research prototype and has no graphical interface. 
-When you launch it, you will have to wait a bit, as the angles of the local contrast and saturation optimizacion has to be precalculated (it cannot be computed in real time).
+When you launch it, you will have to wait a bit, as the angles of the local contrast and saturation optimization has to be precalculated (it cannot be computed in real time).
 To change the brush, enlarge or shrink it, etc. you have to press different keys:
 - Press '+' and '-' to adjust the brush size
 - 'l' to use the local luminance brush
@@ -92,6 +93,6 @@ To change the brush, enlarge or shrink it, etc. you have to press different keys
 - 'r' to use a RCP filter
 - 'l' to use a LCP filter
 - 'g' to save the actual image: you will have to use the console where you launched the tool to enter the path to save the image: ..../resul.jpg and press enter
-- 'p' to use a linear polarizer brush: again, will have to use the console where you launched the tool to enter the degrees of the linear polarizer: 15 and press enter
+- 'p' to use a linear polarizer brush: again, you will have to use the console where you launched the tool to enter the degrees of the linear polarizer: 15 and press enter
 - 'o' work as a polarization eraser, this brush restores the original image (the image without
  any polarizer)
